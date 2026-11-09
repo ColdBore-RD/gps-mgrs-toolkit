@@ -1,0 +1,38 @@
+# secrets
+secrets.h
+secret.h
+*_secrets.h
+[Ss]ecrets.h
+.env
+.env.*
+!.env.example
+# arduino / platformio build output
+build/
+.pio/
+*.bin
+*.elf
+*.hex
+*.map
+# kicad
+*-bak
+*.kicad_prl
+fp-info-cache
+*.lck
+_autosave-*
+*-backups/
+hardware/outputs/
+# print outputs (attach to Releases instead)
+*.stl
+*.3mf
+*.gcode
+# claude worktrees, os junk
+.claude/worktrees/
+.claude/settings.local.json
+Thumbs.db
+desktop.ini
+.DS_Store
+# repo-specific
+.claude/
+MQTT_Dashboard_Handoff.md
+.theia/
+.vscode/
