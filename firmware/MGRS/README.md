@@ -8,7 +8,7 @@
 
 <p>
   <a href="https://github.com/ColdBore-RD/gps-mgrs-toolkit/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/ColdBore-RD/gps-mgrs-toolkit" alt="license" />
+    <img src="https://img.shields.io/badge/license-MIT-blue" alt="license: MIT" />
   </a>
   <img src="https://img.shields.io/badge/version-1.1.1-blue" alt="version" />
 </p>
