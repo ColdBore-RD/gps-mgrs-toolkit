@@ -79,7 +79,7 @@ The repo contains the library itself plus a set of standalone test sketches used
 wiring, UART decoding, and the UTM/MGRS math independently of one another.
 
 <div align="center">
-  <img src="docs/images/mgrs-world-grid.svg" alt="MGRS grid zones with the library's output for nine reference points" width="100%" />
+  <img src="docs/images/mgrs-world-grid.png" alt="MGRS grid zones with the library's output for nine reference points" width="100%" />
 </div>
 
 <!-- Repository Structure -->
