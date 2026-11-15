@@ -47,7 +47,6 @@
 # Table of Contents
 
 - [About the Project](#about-the-project)
-  * [Repository Structure](#repository-structure)
   * [Hardware](#hardware)
   * [Tech Stack](#tech-stack)
   * [Features](#features)
@@ -60,6 +59,7 @@
   * [Wiring](#wiring)
   * [Compiling and Flashing](#compiling-and-flashing)
 - [Usage](#usage)
+- [Repository Structure](#repository-structure)
 - [Roadmap](#roadmap)
 - [Contributing](#contributing)
 - [FAQ](#faq)
@@ -82,24 +82,6 @@ wiring, UART decoding, and the UTM/MGRS math independently of one another.
 <div align="center">
   <img src="docs/images/mgrs-world-grid.png" alt="MGRS grid zones with the library's output for nine reference points" width="100%" />
 </div>
-
-<!-- Repository Structure -->
-### Repository Structure
-
-| Path | Type | Description |
-|---|---|---|
-| [`firmware/MGRS/`](firmware/MGRS/README.md) | Arduino library | `latLonToMGRS()` — WGS84 lat/lon &rarr; UTM &rarr; 10-digit MGRS |
-| [`firmware/GPS_Basic_Test_ESP32C3/`](firmware/GPS_Basic_Test_ESP32C3/README.md) | Test sketch | Raw NMEA passthrough / UART wiring sanity check |
-| [`firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3/`](firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3/README.md) | Test sketch | Full `TinyGPSPlus` field dump + live MGRS conversion (embedded, zero-dependency MGRS math) |
-| [`firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3_v2/`](firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3_v2/README.md) | Test sketch | Same as above, using the [`MGRS`](firmware/MGRS/README.md) library instead of embedded math — recommended version |
-| [`firmware/UTM_Test/`](firmware/UTM_Test/README.md) | Test sketch | Single-point UTM/MGRS field dump against a known control point |
-| [`firmware/MGRS_Test/`](firmware/MGRS_Test/README.md) | Test sketch | MGRS conversion across 5 global reference points |
-| [`firmware/MGRS_Validation/`](firmware/MGRS_Validation/README.md) | Test sketch | MGRS string output checked against known-correct values |
-| [`firmware/GPS_MQTT_Diagnostic_ESP32C3/`](firmware/GPS_MQTT_Diagnostic_ESP32C3/README.md) | Test sketch | Same full GPS field set as the kitchen-sink sketches, published as JSON over MQTT for viewing in Node-RED |
-| [`firmware/GPS_MQTT_Display_ESP32S3/`](firmware/GPS_MQTT_Display_ESP32S3/README.md) | Test sketch | Waveshare ESP32-S3-Zero + ILI9341 TFT — subscribes to the MQTT diagnostic feed and renders it as a physical dashboard |
-| [`tests/host/`](tests/host/README.md) | Host test | Runs the `MGRS` library on a PC against 14 reference strings plus zone and invalid-input checks (no board needed) |
-| `docs/pinouts/` | Reference | XIAO ESP32-C3 pinout diagram |
-| `docs/images/` | Reference | Logo and README diagrams (`make_diagrams.py` regenerates the SVGs) |
 
 <!-- Hardware -->
 ### Hardware
@@ -278,6 +260,24 @@ void loop() {}
 ```
 
 See [`MGRS/README.md`](firmware/MGRS/README.md) for the full API reference.
+
+<!-- Repository Structure -->
+## Repository Structure
+
+| Path | Type | Description |
+|---|---|---|
+| [`firmware/MGRS/`](firmware/MGRS/README.md) | Arduino library | `latLonToMGRS()` — WGS84 lat/lon &rarr; UTM &rarr; 10-digit MGRS |
+| [`firmware/GPS_Basic_Test_ESP32C3/`](firmware/GPS_Basic_Test_ESP32C3/README.md) | Test sketch | Raw NMEA passthrough / UART wiring sanity check |
+| [`firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3/`](firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3/README.md) | Test sketch | Full `TinyGPSPlus` field dump + live MGRS conversion (embedded, zero-dependency MGRS math) |
+| [`firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3_v2/`](firmware/GPS_KitchenSink_FullFunctionTest_ESP32C3_v2/README.md) | Test sketch | Same as above, using the [`MGRS`](firmware/MGRS/README.md) library instead of embedded math — recommended version |
+| [`firmware/UTM_Test/`](firmware/UTM_Test/README.md) | Test sketch | Single-point UTM/MGRS field dump against a known control point |
+| [`firmware/MGRS_Test/`](firmware/MGRS_Test/README.md) | Test sketch | MGRS conversion across 5 global reference points |
+| [`firmware/MGRS_Validation/`](firmware/MGRS_Validation/README.md) | Test sketch | MGRS string output checked against known-correct values |
+| [`firmware/GPS_MQTT_Diagnostic_ESP32C3/`](firmware/GPS_MQTT_Diagnostic_ESP32C3/README.md) | Test sketch | Same full GPS field set as the kitchen-sink sketches, published as JSON over MQTT for viewing in Node-RED |
+| [`firmware/GPS_MQTT_Display_ESP32S3/`](firmware/GPS_MQTT_Display_ESP32S3/README.md) | Test sketch | Waveshare ESP32-S3-Zero + ILI9341 TFT — subscribes to the MQTT diagnostic feed and renders it as a physical dashboard |
+| [`tests/host/`](tests/host/README.md) | Host test | Runs the `MGRS` library on a PC against 14 reference strings plus zone and invalid-input checks (no board needed) |
+| `docs/pinouts/` | Reference | XIAO ESP32-C3 pinout diagram |
+| `docs/images/` | Reference | Logo and README diagrams (`make_diagrams.py` regenerates the SVGs) |
 
 <!-- Roadmap -->
 ## Roadmap
