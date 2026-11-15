@@ -109,8 +109,10 @@ Global variables use 36776 bytes (11%) of dynamic memory, leaving 290904 bytes f
 
 MGRS conversion correctness is validated independently, with known-good control points, in
 [`MGRS_Test`](../MGRS_Test/README.md) and [`MGRS_Validation`](../MGRS_Validation/README.md) —
-since this sketch calls the same `latLonToMGRS()` library function, a passing result there is a
-direct guarantee for this sketch's `mgrs` field as well. In the field, confirm the published
+this sketch calls the same `latLonToMGRS()` library function, so a passing result there covers
+this sketch's `mgrs` field at those control points. It is not a guarantee for every location: the
+control points in 1.1.1 all passed while the Norway/Svalbard exception strips were wrong (fixed in
+1.1.2, see the [CHANGELOG](../../CHANGELOG.md)). In the field, confirm the published
 `mgrs` value is consistent with `lat`/`lon` by cross-checking against a known reference.
 
 Confirmed running live end-to-end (2026-07-19): this sketch publishes continuously to the broker,

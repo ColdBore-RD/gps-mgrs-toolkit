@@ -84,7 +84,9 @@ As with v1, this sketch depends on a live GPS fix, so its MGRS output can't be c
 fixed expected value the way the desk-test sketches can. Correctness of the conversion math
 itself is validated independently, with known-good control points, in
 [`MGRS_Test`](../MGRS_Test/README.md) and [`MGRS_Validation`](../MGRS_Validation/README.md) —
-since v2 calls the same library function those sketches validate, a passing result there is a
-direct guarantee for this sketch's `MGRS` output as well. In the field, confirm this sketch's
+v2 calls the same library function those sketches check, so a passing result there covers this
+sketch's `MGRS` conversion at those control points. It is not a guarantee for every location: the
+control points in 1.1.1 all passed while the Norway/Svalbard exception strips were wrong (fixed in
+1.1.2, see the [CHANGELOG](../../CHANGELOG.md)). In the field, confirm this sketch's
 `MGRS` line is consistent with the printed `Latitude`/`Longitude` by cross-checking against a
 known reference.
