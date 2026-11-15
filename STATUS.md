@@ -1,8 +1,8 @@
 # STATUS
 
-**Status:** v1.1.2 in review (PR on `agent/v1.1.2`), v1.1.1 public
+**Status:** done (v1.1.2, tag pending)
 **Category:** electronics
-**Next step:** Anand merges the v1.1.2 PR and tags `v1.1.2`
+**Next step:** merge the v1.1.2 PR and tag `v1.1.2`
 **Updated:** 2026-11-15
 
 ## Handoff notes
