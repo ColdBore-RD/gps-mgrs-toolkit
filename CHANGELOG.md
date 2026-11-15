@@ -4,6 +4,19 @@ All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/); ve
 
 ## [Unreleased]
 
+## [1.1.2] — 2026-11-15
+Fixes the library defects found by external testing of 1.1.1 (30 M points against GeographicLib 2.5).
+### Fixed
+- `MGRS` 1.1.2, critical: in the Norway (32V) and Svalbard (31X/33X/35X/37X) exception strips the zone was relabelled but the point was still projected on the plain 6° zone's meridian, so the string was 70–374 km off (0.138 % of the UTM domain: western Norway 3–6E incl. Bergen and Stavanger, and Svalbard). Points are now projected in the exception zone. E.g. 60N 3E: `32VNM0000051411` -> `32VJM6564066593`.
+- `MGRS` 1.1.2, high: a NaN latitude passed the range check and crashed in the latitude-band lookup. NaN and infinite latitude or longitude now return `false` from `latLonToMGRS()` and `latLonToUTM()` (a NaN longitude used to return `true` from `latLonToUTM()` with a garbage zone).
+- `MGRS` 1.1.2: latitude 84.0 exactly now gets the Svalbard zones (was e.g. `32X…`, a zone that does not exist).
+- `MGRS` 1.1.2: longitude +180 now gives zone 60 (was zone 61).
+### Changed
+- `latLonToUTM()` now returns the exception zone and projects on its meridian, so its raw easting/northing change in the Norway/Svalbard strips. New public `utmZoneForLatLon()` in `UTM.h`.
+### Added
+- `tests/host`: 4 GeographicLib vectors for the fixes, zone checks for both functions, and NaN/±inf rejection. `MGRS_Validation`: Norway and Svalbard re-projection points.
+- MGRS README: known limitations (precision, 84N / 180E conventions, near-equator northing strip, AVR unsuitable, no input plausibility check).
+
 ## [1.1.1] — 2026-11-08
 First public release (fresh repository; earlier history is not published).
 ### Fixed

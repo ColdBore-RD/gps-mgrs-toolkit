@@ -10,7 +10,7 @@
   <a href="https://github.com/ColdBore-RD/gps-mgrs-toolkit/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-blue" alt="license: MIT" />
   </a>
-  <img src="https://img.shields.io/badge/version-1.1.1-blue" alt="version" />
+  <img src="https://img.shields.io/badge/version-1.1.2-blue" alt="version" />
 </p>
 
 </div>
@@ -83,7 +83,7 @@ Converts a WGS84 latitude/longitude pair to MGRS, writing the result into `outpu
 | `output` | `MGRSCoordinate&` | Populated on success |
 
 **Returns:** `true` on success, `false` if `latitude`/`longitude` are outside the valid MGRS/UTM
-coverage range (see [Limitations](#limitations)).
+coverage range or are NaN/infinite (see [Limitations](#limitations)).
 
 ### `MGRSCoordinate`
 
@@ -115,6 +115,20 @@ Converts a WGS84 latitude/longitude pair directly to UTM, without the MGRS grid-
 lettering step. Used internally by `latLonToMGRS()`, and available directly if only the raw
 projection is needed. Same valid range and return semantics as `latLonToMGRS()`.
 
+Since 1.1.2, `zone` is the MGRS zone, including the Norway and Svalbard exceptions, and
+`easting`/`northing` are projected on that zone's central meridian. (In 1.1.1 `latLonToUTM()`
+always used the plain 6° zone; callers that read the raw UTM values in those strips will see
+different numbers after upgrading.)
+
+### `utmZoneForLatLon()`
+
+```cpp
+int utmZoneForLatLon(double latitude, double longitude);
+```
+
+Returns the UTM zone (1–60) with the Norway/Svalbard exceptions applied; longitude +180 maps to
+zone 60. Does no range checking: call it with values `latLonToUTM()` would accept.
+
 ### `UTMCoordinate`
 
 ```cpp
@@ -135,20 +149,24 @@ struct UTMCoordinate
 | `src/UTM.h` / `src/UTM.cpp` | `latLonToUTM()` — WGS84 &rarr; Transverse Mercator projection |
 | `src/MGRS.h` / `src/MGRS.cpp` | `latLonToMGRS()` — UTM zone/band/grid-square lettering on top of `UTM.cpp`'s projection, and final MGRS string assembly |
 
-`MGRS.cpp` calls `latLonToUTM()` internally, then independently derives the UTM zone and
-latitude band from the input lat/lon (rather than reading them back off `UTMCoordinate`) before
-computing the 100 km grid square letters and formatting the final string.
+`MGRS.cpp` calls `latLonToUTM()` internally and takes the zone from `UTMCoordinate`, so the zone
+in the string is always the zone the easting/northing were projected in. It derives the latitude
+band from the input latitude, then computes the 100 km grid square letters and formats the final
+string.
 
 ## Algorithm Notes
 
 - **Projection:** standard WGS84 ellipsoid Transverse Mercator, scale factor `k0 = 0.9996`,
   false easting `500,000 m`, false northing `10,000,000 m` in the southern hemisphere.
 - **UTM zone exceptions:** the library applies the standard irregular zone boundaries around
-  Norway (zone 32V) and Svalbard (zones 31X/33X/35X/37X).
+  Norway (zone 32V: 56–64N, 3–12E) and Svalbard (zones 31X/33X/35X/37X: 72–84N, 0–42E) and
+  projects on the exception zone's central meridian, so points there can sit up to 6° from it
+  (raw UTM error rises from under 0.96 mm to about 1.07 mm).
 - **Latitude bands:** `C` through `X`, skipping `I` and `O` to avoid confusion with `1` and `0`.
 - **100 km grid square letters:** the easting letter set cycles through 3 alternating
   8-letter sequences based on `zone % 3`; the northing letter set cycles through a 20-letter
-  sequence, offset for even-numbered zones and for the southern hemisphere.
+  sequence, offset by 5 for even-numbered zones (no extra southern-hemisphere offset: the
+  10,000,000 m false northing is a whole number of cycles).
 - **Precision:** 10-digit MGRS (5-digit easting + 5-digit northing) — 1 meter precision.
 
 ## Limitations
@@ -156,6 +174,19 @@ computing the 100 km grid square letters and formatting the final string.
 - Valid latitude range is **-80.0 to 84.0 degrees**. Outside this range the grid system switches
   to Universal Polar Stereographic (UPS), which is not implemented.
 - No MGRS &rarr; lat/lon reverse conversion.
+- 1 m (10-digit) precision only; there is no precision parameter. Truncate the digit strings for
+  coarser grids.
+- Latitude 84.0 exactly is accepted and lettered as band X (UTM-extended convention); some
+  decoders treat 84N as UPS. Longitude +180 is mapped to zone 60 (some tools wrap it to zone 01).
+- Latitudes in roughly [-8.4e-15, 0) get hemisphere `S` with northing exactly 10,000,000 m and the
+  wrong 100 km row letter. The strip is about a nanometre wide and unreachable from a GPS fix
+  (TinyGPSPlus resolves 1e-9°); not fixed in 1.1.2.
+- Needs 64-bit `double` and at least 32-bit `int`. ESP32, RP2040, SAMD and desktop builds are fine;
+  classic AVR (Uno, Nano, Mega: 32-bit `double`, 16-bit `int`) gives wrong results even though
+  `library.properties` says `architectures=*`.
+- The library trusts its input. It has no plausibility check on what the NMEA parser hands it,
+  so a malformed but checksum-valid sentence becomes a confident, wrong MGRS string; gate on fix
+  status and fix age in the sketch.
 - `MGRSCoordinate.mgrs` is a fixed 20-byte buffer; this comfortably fits the standard
   `ZZBLL EEEEE NNNNN` format with no truncation risk under normal input.
 
