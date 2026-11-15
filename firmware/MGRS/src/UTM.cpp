@@ -4,6 +4,72 @@
 #include <math.h>
 
 
+int utmZoneForLatLon(
+    double latitude,
+    double longitude
+)
+{
+    int zone =
+        (int)((longitude + 180.0) / 6.0) + 1;
+
+
+    // lon = +180 would give zone 61
+    if(zone > 60)
+    {
+        zone = 60;
+    }
+
+
+    /*
+        Norway exception:
+        Zone 32V
+    */
+    if(latitude >= 56.0 &&
+       latitude < 64.0 &&
+       longitude >= 3.0 &&
+       longitude < 12.0)
+    {
+        zone = 32;
+    }
+
+
+    /*
+        Svalbard exceptions (band X, 84 inclusive):
+        Zone 31X
+        Zone 33X
+        Zone 35X
+        Zone 37X
+    */
+    if(latitude >= 72.0 &&
+       latitude <= 84.0)
+    {
+        if(longitude >= 0.0 &&
+           longitude < 9.0)
+        {
+            zone = 31;
+        }
+        else if(longitude >= 9.0 &&
+                longitude < 21.0)
+        {
+            zone = 33;
+        }
+        else if(longitude >= 21.0 &&
+                longitude < 33.0)
+        {
+            zone = 35;
+        }
+        else if(longitude >= 33.0 &&
+                longitude < 42.0)
+        {
+            zone = 37;
+        }
+    }
+
+
+    return zone;
+}
+
+
 bool latLonToUTM(
     double latitude,
     double longitude,
@@ -11,14 +77,14 @@ bool latLonToUTM(
 )
 {
 
-    // UTM valid latitude range
-    if(latitude < -80.0 || latitude > 84.0)
+    // UTM valid latitude range. Written so NaN fails the test.
+    if(!(latitude >= -80.0 && latitude <= 84.0))
     {
         return false;
     }
 
 
-    if(longitude < -180.0 || longitude > 180.0)
+    if(!(longitude >= -180.0 && longitude <= 180.0))
     {
         return false;
     }
@@ -31,8 +97,8 @@ bool latLonToUTM(
     double lonRad = longitude * GeoConstants::DEG_TO_RAD_CB;
 
 
-    // Determine UTM zone
-    int zone = (int)((longitude + 180.0) / 6.0) + 1;
+    // Determine UTM zone (with exceptions) and project on its meridian
+    int zone = utmZoneForLatLon(latitude, longitude);
 
 
     double lonOrigin =

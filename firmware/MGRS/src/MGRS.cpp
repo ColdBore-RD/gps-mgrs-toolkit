@@ -26,73 +26,13 @@ static const char rowLetters[] =
     "ABCDEFGHJKLMNPQRSTUV";
 
 
-static int getUTMZone(
-    double latitude,
-    double longitude
-)
-{
-    int zone =
-        (int)((longitude + 180.0) / 6.0) + 1;
-
-
-    /*
-        Norway exception:
-        Zone 32V
-    */
-    if(latitude >= 56.0 &&
-       latitude < 64.0 &&
-       longitude >= 3.0 &&
-       longitude < 12.0)
-    {
-        zone = 32;
-    }
-
-
-    /*
-        Svalbard exceptions:
-        Zone 31X
-        Zone 33X
-        Zone 35X
-        Zone 37X
-    */
-
-    if(latitude >= 72.0 &&
-       latitude < 84.0)
-    {
-        if(longitude >= 0.0 &&
-           longitude < 9.0)
-        {
-            zone = 31;
-        }
-        else if(longitude >= 9.0 &&
-                longitude < 21.0)
-        {
-            zone = 33;
-        }
-        else if(longitude >= 21.0 &&
-                longitude < 33.0)
-        {
-            zone = 35;
-        }
-        else if(longitude >= 33.0 &&
-                longitude < 42.0)
-        {
-            zone = 37;
-        }
-    }
-
-
-    return zone;
-}
-
-
-
 static char getLatitudeBand(
     double latitude
 )
 {
-    if(latitude < -80 ||
-       latitude > 84)
+    // Written so NaN fails the test
+    if(!(latitude >= -80 &&
+         latitude <= 84))
     {
         return 'Z';
     }
@@ -191,15 +131,16 @@ bool latLonToMGRS(
 )
 {
 
-    if(latitude < -80 ||
-       latitude > 84)
+    // Range checks written so NaN fails them
+    if(!(latitude >= -80 &&
+         latitude <= 84))
     {
         return false;
     }
 
 
-    if(longitude < -180 ||
-       longitude > 180)
+    if(!(longitude >= -180 &&
+         longitude <= 180))
     {
         return false;
     }
@@ -219,11 +160,9 @@ bool latLonToMGRS(
 
 
 
+    // Zone (with Norway/Svalbard exceptions) the projection used
     int zone =
-        getUTMZone(
-            latitude,
-            longitude
-        );
+        utm.zone;
 
 
 

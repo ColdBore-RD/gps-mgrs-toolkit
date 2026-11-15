@@ -60,6 +60,18 @@ TestPoint tests[] =
     "Anchorage AK",
     61.2181,
     -149.9003
+    },
+
+    {
+    "Norway 3E (32V exception)",
+    60.0,
+    3.0
+    },
+
+    {
+    "Svalbard 32.2E (35X exception)",
+    78.184959,
+    32.234474
     }
 };
 

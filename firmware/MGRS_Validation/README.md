@@ -1,6 +1,6 @@
 # MGRS_Validation
 
-Reference-string validation test for the [`MGRS`](../MGRS/README.md) library: 8 global points,
+Reference-string validation test for the [`MGRS`](../MGRS/README.md) library: 10 global points,
 each checked against a known-correct MGRS output string. The same vectors run on a PC, without a
 board, in [`tests/host`](../../tests/host/README.md).
 
@@ -37,9 +37,14 @@ arduino-cli monitor -p COM3 -c baudrate=115200
 | Denver, CO | 39.7392 | -104.9903 | `13SED0083198811` |
 | San Francisco, CA | 37.7749 | -122.4194 | `10SEG5113080998` |
 | Anchorage, AK | 61.2181 | -149.9003 | `06VUN4424790536` |
+| Norway, 3E (zone 32V exception) | 60.0 | 3.0 | `32VJM6564066593` |
+| Svalbard, 32.2E (zone 35X exception) | 78.184959 | 32.234474 | `35XPG1949384358` |
 
-All eight strings were cross-checked against an independent implementation (Krüger series);
-matching every one exactly is the pass condition for a library change. Sydney is the only
-southern-hemisphere point and guards the row-letter fix in 1.1.1. A `FAILED` line for any point indicates the
+The first eight strings were cross-checked against an independent implementation (Krüger series),
+the last two against GeographicLib 2.5; matching every one exactly is the pass condition for a
+library change. Sydney is the only southern-hemisphere point and guards the row-letter fix in
+1.1.1. The Norway and Svalbard points sit where the exception zone differs from the 6° zone the
+longitude falls in, and guard the re-projection fix in 1.1.2 (1.1.1 printed `32VNM0000051411`
+and `35XMG8250279125`, 70–374 km off). A `FAILED` line for any point indicates the
 coordinate fell outside the library's valid latitude/longitude range, which should not occur for
 any of these fixed test points.
