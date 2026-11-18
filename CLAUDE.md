@@ -6,7 +6,7 @@ XIAO ESP32-C3 GPS platform with a from-scratch, dependency-free WGS84 -> UTM -> 
 - `firmware\MGRS\` the Arduino library (`src\MGRS.*`, `src\UTM.*`, `src\GeoConstants.h`). It sits beside the sketches so the READMEs' `..\MGRS\` links work.
 - `firmware\<sketch>\` one folder per sketch (folder name = `.ino` name): GPS_Basic_Test, GPS_KitchenSink (embedded MGRS) and _v2 (uses the library), MGRS_Test, MGRS_Validation, UTM_Test, GPS_MQTT_Diagnostic_ESP32C3, GPS_MQTT_Display_ESP32S3, TFT_Touch_Test_ESP32S3_v1.0.
 - `docs\pinouts\` XIAO ESP32-C3 pinout.
-- `GPS_MQTT_Display_ESP32S3\ESP32-S3-Zero_ILI9341_XPT2046_Reference.md` is the canonical TFT/touch wiring reference; other repos link here.
+- `firmware\GPS_MQTT_Display_ESP32S3\ESP32-S3-Zero_ILI9341_XPT2046_Reference.md` is the canonical TFT/touch wiring reference; other repos link here.
 
 ## Build / flash
 ```powershell
