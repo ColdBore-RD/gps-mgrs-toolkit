@@ -1,12 +1,21 @@
 """Regenerate docs/images/mgrs-world-grid.svg and mgrs-breakdown.svg (stdlib only).
 
 MGRS strings below are the library's own output (tests/host/host_test.cpp vectors).
+The world map's land polygons live in world-land.json next to this script
+(Natural Earth 50m land, public domain, pre-clipped to lon -180..180,
+lat -80..84); if that file is absent the grid still renders, without land.
+Land is drawn in a muted green with a slightly brighter coastline stroke,
+so the coast stays legible and the reference dots read as on land even
+where they sit on narrow coastal strips (Oslofjord, Svalbard).
 Run: python docs/images/make_diagrams.py
 """
+import json
 import pathlib
 
 OUT = pathlib.Path(__file__).parent
 BG, GRID, GREEN, ACCENT, TEXT, DIM = "#0A0A0A", "#1F2A1C", "#76FF4B", "#4BC92A", "#E8E8E8", "#8A9486"
+LAND = "#1E3A28"  # muted green land fill (world-land.json, Natural Earth 50m)
+LAND_STROKE = "#2F5D3A"  # coastline stroke, slightly brighter than the fill
 FONT = "font-family='ui-monospace,SFMono-Regular,Consolas,monospace'"
 
 POINTS = [  # name, lat, lon, MGRS (library output), label dx, dy
@@ -31,6 +40,13 @@ def world():
     s = [f"<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 {w} {h}' width='{w}' height='{h}'>",
          f"<rect width='{w}' height='{h}' fill='{BG}'/>",
          f"<text x='{ml}' y='30' fill='{GREEN}' font-size='20' font-weight='700' {FONT}>MGRS grid zones: 60 UTM zones x 20 latitude bands</text>"]
+    try:
+        land = json.loads((OUT / "world-land.json").read_text(encoding="utf-8"))["polygons"]
+    except (FileNotFoundError, KeyError, ValueError):
+        land = []
+    for ring in land:
+        pts = " ".join(f"{x(lon):.1f},{y(lat):.1f}" for lon, lat in ring)
+        s.append(f"<polygon points='{pts}' fill='{LAND}' stroke='{LAND_STROKE}' stroke-width='0.6'/>")
     for z in range(61):
         s.append(f"<line x1='{x(-180 + 6 * z):.1f}' y1='{y(84):.1f}' x2='{x(-180 + 6 * z):.1f}' y2='{y(-80):.1f}' stroke='{GRID}'/>")
     for i in range(21):
@@ -50,7 +66,7 @@ def world():
         s.append(f"<circle cx='{px:.1f}' cy='{py:.1f}' r='4' fill='{GREEN}'/>")
         s.append(f"<text x='{px + dx:.1f}' y='{py + dy:.1f}' fill='{TEXT}' font-size='11' {FONT}>{name}</text>")
         s.append(f"<text x='{px + dx:.1f}' y='{py + dy + 13:.1f}' fill='{GREEN}' font-size='11' {FONT}>{m}</text>")
-    s.append(f"<text x='{w - 20}' y='{h - 8}' fill='{DIM}' font-size='10' text-anchor='end' {FONT}>Equirectangular, grid only. Dashed: irregular zones (Norway, Svalbard). Points: library output.</text>")
+    s.append(f"<text x='{w - 20}' y='{h - 8}' fill='{DIM}' font-size='10' text-anchor='end' {FONT}>Equirectangular world map with MGRS grid zones. Dashed: irregular zones (Norway, Svalbard). Points: library output.</text>")
     s.append("</svg>")
     (OUT / "mgrs-world-grid.svg").write_text("\n".join(s) + "\n", encoding="utf-8")
 
