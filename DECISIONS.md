@@ -19,3 +19,6 @@ Options considered: join the home router (needs credentials in secrets.h), BLE U
 
 ## 2026-11-24 - Client-side MGRS grid, library string stays authoritative
 Options considered: a map library plus plugin, a grid drawn by the board, a small WGS84-UTM grid drawn in the page. Chosen: in-page grid (about 40 lines of UTM math, no dependencies). Why: no CDN scripts, matches the library vectors. Consequence: it ignores the Norway/Svalbard zone exceptions and stops beyond 84N/80S; the MGRS string from the board's library is the value to trust.
+
+## 2026-11-24 - Bench test page v2 accepted after phone test
+Options considered: hold v2 until the map tiles are also tested, merge now. Chosen: merge now. Why: the UI, readings and grid worked on a phone outdoors; the map needs the phone's mobile data, which that phone lacked, and a failed tile load only leaves the basemap blank. Consequence: map tiles remain an open thread.
