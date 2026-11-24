@@ -1,0 +1,9 @@
+profiles:
+  s3:
+    fqbn: esp32:esp32:XIAO_ESP32S3:CDCOnBoot=cdc
+    platforms:
+      - platform: esp32:esp32 (3.3.10)
+    libraries:
+      - TinyGPSPlus (1.0.3)
+      - dir: ../MGRS
+default_profile: s3
