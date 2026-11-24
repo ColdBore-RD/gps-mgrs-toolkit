@@ -7,7 +7,7 @@ Field check for the GPS + MGRS path with no computer. The board starts its own W
   <img src="../../docs/images/bench-page-v2.jpg" alt="Page with map and MGRS grid (demo data at a public landmark)" width="260" />
 </p>
 
-*Left: XIAO ESP32-S3 + ATGM336H bench setup. Right: the page with map and MGRS grid (demo data at a public landmark). The first version of the page, tested outdoors on an iPhone with 11 satellites, is `docs/images/bench-page-v1.png` (position redacted).*
+*Left: XIAO ESP32-S3 + ATGM336H bench setup. Right: the page with map and MGRS grid (demo data at a public landmark). Tested outdoors on an iPhone with a fix on 11 satellites. The first version of the page (readings and raw NMEA only, no map) is `docs/images/bench-page-v1.jpg`.*
 
 ## Use
 1. Wire the GPS (9600 baud NMEA). Defaults: C3 GPS TX to GPIO20 (D7), GPS RX to GPIO21 (D6); S3 GPS TX to GPIO44 (D7), GPS RX to GPIO43 (D6). The sketch picks the pair from the build target.
