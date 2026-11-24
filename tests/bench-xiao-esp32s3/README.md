@@ -21,3 +21,5 @@ The toolkit targets the XIAO ESP32-C3. These sketches were built unchanged excep
 ## Notes
 - `CLAUDE.md` "Hardware" lists C3 pins only; the S3 pins above are the difference.
 - No coordinates recorded.
+
+![Bench setup: XIAO ESP32-S3 and ATGM336H](../../docs/images/bench-hardware.jpg)

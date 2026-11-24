@@ -2,6 +2,13 @@
 
 Field check for the GPS + MGRS path with no computer. The board starts its own Wi-Fi access point and serves a status page to a phone.
 
+<p>
+  <img src="../../docs/images/bench-hardware.jpg" alt="XIAO ESP32-S3 with ATGM336H GPS module on the bench" width="300" />
+  <img src="../../docs/images/bench-page-v1.png" alt="Status page on a phone (position redacted)" width="260" />
+</p>
+
+*Left: XIAO ESP32-S3 + ATGM336H bench setup. Right: the page on an iPhone, outdoors, 11 satellites (position fields redacted).*
+
 ## Use
 1. Wire the GPS (9600 baud NMEA). Defaults: C3 GPS TX to GPIO20 (D7), GPS RX to GPIO21 (D6); S3 GPS TX to GPIO44 (D7), GPS RX to GPIO43 (D6). The sketch picks the pair from the build target.
 2. Build and upload (libraries: TinyGPSPlus, local `..\MGRS`). On an S3 use `esp32:esp32:XIAO_ESP32S3`, on a C3 `esp32:esp32:XIAO_ESP32C3`.
