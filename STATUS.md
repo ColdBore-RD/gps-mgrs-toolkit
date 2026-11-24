@@ -1,13 +1,14 @@
 # STATUS
 
-**Status:** done (v1.1.2, public)
+**Status:** active (library v1.1.2 released; Wi-Fi bench test sketch in review)
 **Category:** electronics
-**Next step:** none
-**Updated:** 2026-11-15
+**Next step:** Anand tries the v2 page on his phone outdoors, then push `agent/s3-bench-map-v2` and open its PR against `agent/s3-bench-test`
+**Updated:** 2026-11-24
 
 ## Handoff notes
-- 2026-11-15: v1.1.2 released (PR #5, tag `v1.1.2`, GitHub release). It fixes the defects external testing found in 1.1.1 (patch 0001 of that report, re-implemented): Norway/Svalbard points are re-projected in the exception zone (was 70-374 km off), NaN/inf inputs return false (NaN latitude crashed), lat 84 gets the Svalbard zones, lon 180 gives zone 60. `tests/host` has the GeographicLib vectors and fails/segfaults on 1.1.1. Left open: N2 (patch 0002, near-equator nanometre strip), the v1 KitchenSink sketch's embedded math (NaN-unsafe checks and lat-84 edge; it already re-projects), integration findings I1-I6 in the sketches.
-- 2026-11-08 (issue #1): fixed the southern-hemisphere 100 km row letter in `MGRS.cpp` (library 1.1.1), added `tests/host` (PC regression test, 10 vectors cross-checked against an independent implementation), scrubbed broker IP / internal account names / a real GPS fix from the READMEs, fixed old-repo-name links.
-- Public since 2026-11-08 as a fresh repo with one squashed commit (tag `v1.1.1`). The old private history is in `ColdBore-RD/gps-mgrs-toolkit-archive` (archived). Never push the old commits or the local `v1.0.0` tag here. License badge is static (the GitHub proxy cached "repo not found").
-- Working `secrets.h` files and `MQTT_Dashboard_Handoff.md` are local only (gitignored); copy them in before flashing the MQTT sketches.
-- Two sketch folders still carry versions in their names (`..._v2`, `TFT_Touch_Test_ESP32S3_v1.0`). D1 covers repo names only, so they were left alone.
+- 2026-11-24: new sketch `GPS_WiFi_Bench_Test` (XIAO ESP32-C3/S3): the board is its own Wi-Fi AP (`gps-bench`) and serves a phone page at `192.168.4.1`. v1 (PR #10, open): readings, MGRS, raw NMEA, plus bench record `tests/bench-xiao-esp32s3`. Verified on a XIAO ESP32-S3 + ATGM336H: GPS_Basic_Test, MGRS_Test and MGRS_Validation pass; the page showed a fix on 11 satellites outdoors on an iPhone. S3 pins are GPS TX to GPIO44, RX to GPIO43 (the C3 numbers read nothing).
+- v2 is on the local branch `agent/s3-bench-map-v2` (not pushed, Anand asked to try it first): map centred on the fix (OSM tiles fetched by the phone, so the basemap needs internet on the phone), client-side MGRS grid overlay, CBRD logo, repo link. Checked in a browser with demo data only; the grid math matches the library for 8 vectors. Never run on a phone against the board.
+- Hardware: the bench XIAO ESP32-S3 (USB serial `A4CB8FD1D680`, COM9 on 2026-11-24, it changes per plug-in) is flashed with the v2 build and wired to the ATGM336H.
+- Open threads: C3 build untested; MQTT and display sketches not run; GPS_KitchenSink_v2 never got a fix on this board (indoors only); the page is open to anyone with the AP password (default is in the sketch).
+- Photos in `sandbox\2026-11-bench-photos` (Codex-cleaned backgrounds, prune about 2026-12-24); the repo uses photo-c. Screenshots in `docs/images` are demo data at a public landmark, never real positions.
+- Earlier (2026-11-15, v1.1.2 and before): see CHANGELOG.md. Left open there: N2 near-equator strip, v1 KitchenSink embedded math, integration findings I1-I6.
