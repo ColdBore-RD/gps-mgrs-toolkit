@@ -3,6 +3,9 @@
 All notable changes. Format: [Keep a Changelog](https://keepachangelog.com/); versions: SemVer.
 
 ## [Unreleased]
+### Added
+- `GPS_WiFi_Bench_Test`: field test sketch for XIAO ESP32-C3 and ESP32-S3. The board runs its own Wi-Fi access point and serves a phone page with fix state, lat/lon, MGRS, satellites, HDOP, raw NMEA, a map centered on the position with an MGRS grid overlay (basemap needs internet on the phone), the CBRD logo and a repo link, so no computer is needed outdoors.
+- `tests/bench-xiao-esp32s3`: bench record for the sketches on the S3 (pins 44/43).
 
 ## [1.1.2] — 2026-11-15
 Fixes the library defects found by external testing of 1.1.1 (30 M points against GeographicLib 2.5).

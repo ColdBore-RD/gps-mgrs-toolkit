@@ -4,7 +4,7 @@ XIAO ESP32-C3 GPS platform with a from-scratch, dependency-free WGS84 -> UTM -> 
 
 ## Layout
 - `firmware\MGRS\` the Arduino library (`src\MGRS.*`, `src\UTM.*`, `src\GeoConstants.h`). It sits beside the sketches so the READMEs' `..\MGRS\` links work.
-- `firmware\<sketch>\` one folder per sketch (folder name = `.ino` name): GPS_Basic_Test, GPS_KitchenSink (embedded MGRS) and _v2 (uses the library), MGRS_Test, MGRS_Validation, UTM_Test, GPS_MQTT_Diagnostic_ESP32C3, GPS_MQTT_Display_ESP32S3, TFT_Touch_Test_ESP32S3_v1.0.
+- `firmware\<sketch>\` one folder per sketch (folder name = `.ino` name): GPS_Basic_Test, GPS_KitchenSink (embedded MGRS) and _v2 (uses the library), MGRS_Test, MGRS_Validation, UTM_Test, GPS_WiFi_Bench_Test (phone page over its own AP, C3 and S3), GPS_MQTT_Diagnostic_ESP32C3, GPS_MQTT_Display_ESP32S3, TFT_Touch_Test_ESP32S3_v1.0.
 - `docs\pinouts\` XIAO ESP32-C3 pinout.
 - `firmware\GPS_MQTT_Display_ESP32S3\ESP32-S3-Zero_ILI9341_XPT2046_Reference.md` is the canonical TFT/touch wiring reference; other repos link here.
 
@@ -22,4 +22,4 @@ Libraries: TinyGPSPlus, PubSubClient (MQTT sketches), Adafruit GFX + ILI9341 + X
 - This repo is public. Nothing personal, no broker hostnames, no credentials.
 
 ## Hardware
-GPS TX -> GPIO20/D7, GPS RX -> GPIO21/D6, 9600 baud NMEA, shared GND.
+GPS TX -> GPIO20/D7, GPS RX -> GPIO21/D6 on the C3; on the XIAO ESP32-S3 use GPS TX -> GPIO44/D7, GPS RX -> GPIO43/D6. 9600 baud NMEA, shared GND. `GPS_WiFi_Bench_Test` picks the pins by build target.

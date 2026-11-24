@@ -13,3 +13,12 @@ Went public as v1.1.1 via a fresh repo with one squashed commit; the old history
 
 ## 2026-07 — From-scratch MGRS instead of a third-party library
 The conversion is implemented directly (WGS84 -> UTM -> MGRS) with no dependencies, and validated in `MGRS_Validation` against known-correct strings.
+
+## 2026-11-24 - Wi-Fi bench test is a self-hosted AP page, not router Wi-Fi or BLE
+Options considered: join the home router (needs credentials in secrets.h), BLE UART, board as its own access point serving a page. Chosen: own AP. Why: no credentials, works outdoors with a power bank and any phone; the page is the start of a test method offered in a later release. Consequence: the phone has no internet from the board, so the v2 map tiles come from the phone's mobile data; offline the grid and readings still work.
+
+## 2026-11-24 - Client-side MGRS grid, library string stays authoritative
+Options considered: a map library plus plugin, a grid drawn by the board, a small WGS84-UTM grid drawn in the page. Chosen: in-page grid (about 40 lines of UTM math, no dependencies). Why: no CDN scripts, matches the library vectors. Consequence: it ignores the Norway/Svalbard zone exceptions and stops beyond 84N/80S; the MGRS string from the board's library is the value to trust.
+
+## 2026-11-24 - Bench test page v2 accepted after phone test
+Options considered: hold v2 until the map tiles are also tested, merge now. Chosen: merge now. Why: the UI, readings and grid worked on a phone outdoors; the map needs the phone's mobile data, which that phone lacked, and a failed tile load only leaves the basemap blank. Consequence: map tiles remain an open thread.
