@@ -14,6 +14,7 @@
 #include <WebServer.h>
 #include <TinyGPSPlus.h>
 #include <MGRS.h>
+#include "page.h"
 
 // ---- settings ---------------------------------------------------------
 static const char* AP_SSID     = "gps-bench";
@@ -44,71 +45,6 @@ uint32_t nmeaCount = 0;        // total lines seen
 char nmeaCur[NMEA_LINE_LEN];
 uint8_t nmeaCurLen = 0;
 
-static const char PAGE[] PROGMEM = R"HTML(<!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>GPS / MGRS bench test</title>
-<style>
-:root{--bg:#0f1318;--card:#181e26;--fg:#e8edf2;--mut:#8a97a6;--ok:#2ecc71;--bad:#e5484d;--acc:#4da3ff}
-@media(prefers-color-scheme:light){:root{--bg:#f2f4f7;--card:#fff;--fg:#14202b;--mut:#5b6b7b;--ok:#128a4a;--bad:#c62828;--acc:#1565c0}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px system-ui,sans-serif}
-main{max-width:720px;margin:0 auto;padding:16px}
-h1{font-size:18px;margin:0 0 12px;color:var(--mut);font-weight:600}
-.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:12px}
-.badge{display:inline-block;padding:4px 12px;border-radius:99px;font-weight:700;color:#fff;background:var(--bad)}
-.badge.ok{background:var(--ok)}
-.mgrs{font:700 clamp(24px,7vw,40px) ui-monospace,Consolas,monospace;letter-spacing:1px;word-break:break-all;margin:8px 0 4px}
-.sub{color:var(--mut);font-size:14px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 16px}
-.k{color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.5px}
-.v{font:600 18px ui-monospace,Consolas,monospace}
-pre{margin:0;max-height:300px;overflow:auto;font:12px/1.4 ui-monospace,Consolas,monospace;white-space:pre-wrap;word-break:break-all}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-label{color:var(--mut);font-size:13px}
-</style></head><body><main>
-<h1>GPS / MGRS bench test</h1>
-<div class="card">
- <div class="top"><span id="badge" class="badge">NO FIX</span><span class="sub" id="age">connecting...</span></div>
- <div class="k">MGRS</div><div class="mgrs" id="mgrs">-</div>
- <div class="sub" id="parts">zone - band - square -</div>
-</div>
-<div class="card"><div class="grid">
- <div><div class="k">Latitude</div><div class="v" id="lat">-</div></div>
- <div><div class="k">Longitude</div><div class="v" id="lon">-</div></div>
- <div><div class="k">Satellites</div><div class="v" id="sats">-</div></div>
- <div><div class="k">HDOP</div><div class="v" id="hdop">-</div></div>
- <div><div class="k">Altitude</div><div class="v" id="alt">-</div></div>
- <div><div class="k">UTC</div><div class="v" id="utc">-</div></div>
- <div><div class="k">NMEA ok / bad</div><div class="v" id="chk">-</div></div>
- <div><div class="k">Uptime</div><div class="v" id="up">-</div></div>
-</div></div>
-<div class="card">
- <div class="top"><div class="k">Raw NMEA</div><label><input type="checkbox" id="pause"> pause</label></div>
- <pre id="raw">waiting for data...</pre>
-</div>
-</main>
-<script>
-const $=id=>document.getElementById(id);
-async function tick(){
- try{
-  const d=await (await fetch('/data',{cache:'no-store'})).json();
-  const b=$('badge');b.textContent=d.fix?'FIX':'NO FIX';b.className='badge'+(d.fix?' ok':'');
-  $('mgrs').textContent=d.mgrs||'-';
-  $('parts').textContent=d.mgrs?('zone '+d.zone+' - band '+d.band+' - square '+d.square+' - E '+d.e+' N '+d.n):'no MGRS until a fix';
-  $('lat').textContent=d.fix?d.lat.toFixed(6):'-';
-  $('lon').textContent=d.fix?d.lon.toFixed(6):'-';
-  $('sats').textContent=d.sats;$('hdop').textContent=d.hdop>0?d.hdop.toFixed(1):'-';
-  $('alt').textContent=d.alt!==null?d.alt.toFixed(1)+' m':'-';
-  $('utc').textContent=d.utc||'-';
-  $('chk').textContent=d.ok+' / '+d.bad;
-  $('up').textContent=d.up+' s';
-  $('age').textContent=d.fix?('fix age '+(d.age/1000).toFixed(1)+' s'):(d.chars>0?'receiving NMEA, searching':'no NMEA - check wiring');
-  if(!$('pause').checked){const r=$('raw');const bot=r.scrollTop+r.clientHeight>=r.scrollHeight-8;
-   r.textContent=d.nmea.join('\n');if(bot)r.scrollTop=r.scrollHeight;}
- }catch(e){$('age').textContent='connection lost';}
-}
-tick();setInterval(tick,1000);
-</script></body></html>)HTML";
 
 static void nmeaFeed(char c) {
   if (c == '\n') {

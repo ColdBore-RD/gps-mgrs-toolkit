@@ -13,10 +13,14 @@ Field check for the GPS + MGRS path with no computer. The board starts its own W
 - MGRS string from the library, split into zone, band, square, easting, northing.
 - Latitude, longitude, altitude, UTC, satellites, HDOP, NMEA checksum ok/bad counts, uptime.
 - Raw NMEA stream (last 24 lines, pausable).
+- Map centered on the current position (OpenStreetMap tiles) with an MGRS grid overlay: 100 km / 10 km / 1 km / 100 m / 10 m / 1 m lines chosen by zoom, easting/northing digit labels and 100 km square letters. Buttons: zoom, follow position, grid on/off, basemap on/off; drag to pan.
 - Endpoint `/data` returns the same as JSON.
+- Cold Bore R&D logo and a link to this repo.
 
 ## Notes
 - No router, credentials or `secrets.h`. Nothing is stored; the position exists only in RAM and on the phone screen.
+- **The basemap needs internet on the phone.** The tiles are fetched by the phone, not the board. Joined to `gps-bench` (no internet) most phones fall back to mobile data for other traffic; if yours does not, only the basemap is missing: the grid, marker, MGRS and all readings still work on a plain background. Tiles come from tile.openstreetmap.org (light use only, see their tile policy).
+- The grid is drawn in the page from WGS84-to-UTM math, centered on the map. It uses the plain 6-degree zone of the map center, so it ignores the Norway and Svalbard exception zones and is not drawn beyond 84N / 80S. The MGRS string at the top comes from the library on the board and is the authoritative value.
 - The page is open to anyone who knows the AP password, so don't leave it running near a fixed location.
 - The serial monitor (115200) prints the AP address on boot.
 - Verified on a XIAO ESP32-S3 + ATGM336H (2026-11-24): phone page loaded, fix with 11 satellites outdoors. C3 build not yet tested. See `tests\bench-xiao-esp32s3`.
